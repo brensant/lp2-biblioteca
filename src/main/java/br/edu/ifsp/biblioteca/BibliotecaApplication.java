@@ -1,7 +1,6 @@
 package br.edu.ifsp.biblioteca;
 
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import br.edu.ifsp.biblioteca.domain.Livro;
 
 /**
  * Ponto de entrada da aplicacao.
@@ -13,10 +12,35 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  *                          pacote para baixo — por isso todo o codigo
  *                          fica sob br.edu.ifsp.biblioteca)
  */
-@SpringBootApplication
+//@SpringBootApplication
 public class BibliotecaApplication {
-
     public static void main(String[] args) {
-        SpringApplication.run(BibliotecaApplication.class, args);
+        Livro livro1 = new Livro(
+                1L,
+                "8501115827",
+                "O Nome da Rosa",
+                1980
+        );
+
+        System.out.println(livro1);
+
+        Livro livro2 = new Livro(
+                2L,
+                "8594318839",
+                "O Cortiço",
+                1890
+        );
+
+        System.out.println(livro2);
+
+        Livro livro3 = new Livro(
+                3L,
+                "8571648565",
+                "A Trilogia de Nova York",
+                1987
+        );
+
+        System.out.println(livro3);
+
     }
 }
