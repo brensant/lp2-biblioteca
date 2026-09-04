@@ -1,10 +1,14 @@
 package br.edu.ifsp.biblioteca.domain;
 
+import java.util.List;
+
 public class Livro {
-    private Long   id;
-    private String isbn;
-    private String titulo;
-    private int    anoPublicacao;
+    private Long           id;
+    private String         isbn;
+    private String         titulo;
+    private List<Autor>    autores;
+    private int            anoPublicacao;
+    private List<Exemplar> listaExemplares;
 
     public Livro(String isbn, String titulo, int anoPublicacao) {
         this.isbn = isbn;
@@ -28,6 +32,8 @@ public class Livro {
         return (anoPublicacao);
     }
 
+    public void setId(Long id) { this.id = id; }
+
     public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
@@ -38,6 +44,14 @@ public class Livro {
 
     public void setAnoPublicacao(int anoPublicacao) {
         this.anoPublicacao = anoPublicacao;
+    }
+
+    public void adicionarExemplar(Exemplar item) {
+        this.listaExemplares.add(item);
+    }
+
+    public void adicionarAutor(Autor autor) {
+        this.autores.add(autor);
     }
 
     @Override
