@@ -31,9 +31,13 @@ public class Livro {
         return (titulo);
     }
 
+    public List<Autor> getAutores() { return (autores); }
+
     public int getAnoPublicacao() {
         return (anoPublicacao);
     }
+
+    public List<Exemplar> getExemplares() { return (listaExemplares); }
 
     public void setId(Long id) { this.id = id; }
 

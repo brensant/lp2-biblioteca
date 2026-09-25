@@ -27,6 +27,10 @@ public class Exemplar {
         return (status);
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public void setCodigo(String codigo) {
         this.codigo = codigo;
     }
@@ -37,6 +41,19 @@ public class Exemplar {
 
     public void setStatus(EStatusExemplar status) {
         this.status = status;
+    }
+
+    public void emprestar() {
+        if (this.status == EStatusExemplar.EMPRESTADO) {
+            throw new IllegalStateException("Exemplar " + this.codigo + " já está emprestado!");
+        }
+        this.status = EStatusExemplar.EMPRESTADO;
+    }
+
+    public void devolver() {
+        if (this.status == EStatusExemplar.EMPRESTADO) {
+            this.status = EStatusExemplar.DISPONIVEL;
+        }
     }
 
     @Override
