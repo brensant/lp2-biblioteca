@@ -27,16 +27,21 @@ public class LivroRepositoryJdbc implements ILivroRepository {
         try (Connection conexao = this.dataSource.getConnection()) {
             conexao.setAutoCommit(false);
 
-            if (livro.getId() == null) {
-                this.inserirLivro(conexao, livro);
-            } else {
-                this.atualizarLivro(conexao, livro);
+            try {
+                if (livro.getId() == null) {
+                    this.inserirLivro(conexao, livro);
+                } else {
+                    this.atualizarLivro(conexao, livro);
+                }
+
+                this.salvarAutores(conexao, livro);
+                this.salvarExemplares(conexao, livro);
+
+                conexao.commit();
+            } catch (SQLException erro) {
+                conexao.rollback();
+                throw erro;
             }
-
-            this.salvarAutores(conexao, livro);
-            this.salvarExemplares(conexao, livro);
-
-            conexao.commit();
         } catch (SQLException erro) {
             throw new IllegalStateException("Falha ao salvar o livro", erro);
         }
@@ -172,7 +177,7 @@ public class LivroRepositoryJdbc implements ILivroRepository {
             try (ResultSet resultado = comando.executeQuery()) {
                 while (resultado.next()) {
                     Autor autor = new Autor(resultado.getString("nome"));
-                    autor.setId(resultado.getLong("id)"));
+                    autor.setId(resultado.getLong("id"));
 
                     livro.adicionarAutor(autor);
                 }
@@ -189,7 +194,7 @@ public class LivroRepositoryJdbc implements ILivroRepository {
             try (ResultSet resultado = comando.executeQuery()) {
                 while (resultado.next()) {
                     Exemplar exemplar = new Exemplar(resultado.getString("codigo"), livro);
-                    exemplar.setId(resultado.getLong("id)"));
+                    exemplar.setId(resultado.getLong("id"));
 
                     if (EStatusExemplar.valueOf(resultado.getString("status")) == EStatusExemplar.EMPRESTADO) {
                         exemplar.emprestar();
@@ -215,7 +220,7 @@ public class LivroRepositoryJdbc implements ILivroRepository {
     }
 
     @Override
-    public List<Livro> listarTodos() throws SQLException {
+    public List<Livro> listarTodos() {
         String sql = "SELECT * FROM livro ORDER BY titulo";
 
         try (Connection conexao = this.dataSource.getConnection()) {
