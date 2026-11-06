@@ -37,7 +37,7 @@ public class LivroService {
             throw new RegradeNegocioException("Já existe um livro cadastrado com o ISBN: " + livro.getIsbn());
         }
 
-        Livro livroCadastrado = this.livroRepository.salvar(livro);
+        Livro livroCadastrado = this.livroRepository.save(livro);
 
         return (livroCadastrado);
     }
