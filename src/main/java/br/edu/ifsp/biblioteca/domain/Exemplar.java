@@ -1,14 +1,32 @@
 package br.edu.ifsp.biblioteca.domain;
 
+
+import jakarta.persistence.*;
+
+@Entity
+@Table
 public class Exemplar {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long            id;
+
+    @Column(nullable = false, unique = true, length = 30)
     private String          codigo;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "livro_id", nullable = false)
     private Livro           livro;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
     private EStatusExemplar status;
+
+    protected Exemplar() {}
 
     public Exemplar(String codigo, Livro livro) {
         this.codigo = codigo;
         this.livro = livro;
+        this.status = EStatusExemplar.DISPONIVEL;
     }
 
     public Long getId() {

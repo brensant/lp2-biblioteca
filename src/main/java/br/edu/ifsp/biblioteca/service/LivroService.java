@@ -31,7 +31,7 @@ public class LivroService {
             throw new RegradeNegocioException("Ano de publicação deve ser maior que 0!");
         }
 
-        Optional<Livro> livroJacadastradoOptional = this.livroRepository.buscarPorIsbn(livro.getIsbn());
+        Optional<Livro> livroJacadastradoOptional = this.livroRepository.findByIsbn(livro.getIsbn());
 
         if (livroJacadastradoOptional.isPresent()) {
             throw new RegradeNegocioException("Já existe um livro cadastrado com o ISBN: " + livro.getIsbn());
@@ -46,18 +46,18 @@ public class LivroService {
         Livro livro = this.buscarPorId(livroId);
         livro.adicionarExemplar(new Exemplar(codigoDoExemplar, livro));
 
-        return (this.livroRepository.salvar(livro));
+        return (this.livroRepository.save(livro));
     }
 
     public Livro adicionarAutor(Long livroId, String nomeAutor) {
             Livro livro = this.buscarPorId(livroId);
             livro.adicionarAutor(new Autor(nomeAutor));
 
-            return (this.livroRepository.salvar(livro));
+            return (this.livroRepository.save(livro));
     }
 
     public Livro buscarPorId(Long id) {
-        Optional<Livro> livroOptional = this.livroRepository.buscarPorId(id);
+        Optional<Livro> livroOptional = this.livroRepository.findById(id);
 
         if (livroOptional.isPresent())
             return livroOptional.get();
@@ -66,10 +66,10 @@ public class LivroService {
     }
 
     public List<Livro> buscarPorTitulo(String trechoDoTitulo) {
-        return (this.livroRepository.buscarPorTitulo(trechoDoTitulo));
+        return (this.livroRepository.findByTituloContainingIgnoreCase(trechoDoTitulo));
     }
 
     public List<Livro> listarTodos() {
-        return (this.livroRepository.listarTodos());
+        return (this.livroRepository.findAll());
     }
 }
