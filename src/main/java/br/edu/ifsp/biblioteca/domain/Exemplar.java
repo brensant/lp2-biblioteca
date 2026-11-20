@@ -74,6 +74,10 @@ public class Exemplar {
         }
     }
 
+    public boolean estaDisponivel() {
+        return (this.status == EStatusExemplar.DISPONIVEL);
+    }
+
     @Override
     public String toString() {
         return "Exemplar{" +

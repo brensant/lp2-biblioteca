@@ -20,11 +20,6 @@ public class Livro {
             length = 200)
     private String         titulo;
 
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(name = "livro_autor",
-               joinColumns = @JoinColumn(name = "livro_id"),
-               inverseJoinColumns = @JoinColumn(name = "autor_id"))
-
     @Column(name = "ano_publicacao")
     private Integer        anoPublicacao;
 
@@ -34,7 +29,11 @@ public class Livro {
                fetch = FetchType.LAZY)
     private List<Exemplar> listaExemplares;
 
-    private  List<Autor> autores = new ArrayList<>();
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY)
+    @JoinTable(name = "livro_autor",
+            joinColumns = @JoinColumn(name = "livro_id"),
+            inverseJoinColumns = @JoinColumn(name = "autor_id"))
+    private  List<Autor>   autores = new ArrayList<>();
 
     public Livro() {}
 
@@ -86,6 +85,17 @@ public class Livro {
 
     public void adicionarAutor(Autor autor) {
         this.autores.add(autor);
+    }
+
+    public long quantidadeDisponivel() {
+        long disponiveis = 0;
+
+        for (Exemplar exemplar : this.getExemplares()) {
+            if(exemplar.estaDisponivel())
+                disponiveis++;
+        }
+
+        return (disponiveis);
     }
 
     @Override

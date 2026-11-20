@@ -1,10 +1,14 @@
 package br.edu.ifsp.biblioteca.service;
 
 import br.edu.ifsp.biblioteca.domain.Usuario;
+import br.edu.ifsp.biblioteca.dto.NovoUsuario;
+import br.edu.ifsp.biblioteca.dto.UsuarioDetalhe;
 import br.edu.ifsp.biblioteca.exception.RegradeNegocioException;
 import br.edu.ifsp.biblioteca.repository.IUsuarioRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,7 +20,9 @@ public class UsuarioService {
         this.usuarioRepository = repository;
     }
 
-    public Usuario cadastrar(Usuario usuario) {
+    public UsuarioDetalhe cadastrar(NovoUsuario novoUsuario) {
+        Usuario usuario = novoUsuario.toEntity();
+
         if (usuario.getNome() == null || usuario.getNome().isEmpty()) {
             throw new RegradeNegocioException("Nome é obrigatório!");
         }
@@ -27,28 +33,33 @@ public class UsuarioService {
 
         this.validarEmail(usuario.getEmail());
 
-        return (this.usuarioRepository.salvar(usuario));
+        return (UsuarioDetalhe.of(this.usuarioRepository.save(usuario)));
     }
 
-    public Usuario buscarPorId(Long id) {
-        Optional<Usuario> usuarioOptional = this.usuarioRepository.buscarPorId(id);
+    @Transactional(readOnly = true)
+    public UsuarioDetalhe buscarPorId(Long id) {
+        Optional<Usuario> usuarioOptional = this.usuarioRepository.findById(id);
 
         if (usuarioOptional.isPresent()) {
-            return (usuarioOptional.get());
+            return (UsuarioDetalhe.of(usuarioOptional.get()));
         }
 
         throw new RegradeNegocioException("Usuário não encontrado: " + id);
     }
 
     private void validarEmail(String email) {
-        Optional<Usuario> usuarioOptional = this.usuarioRepository.buscarPorEmail(email);
+        Optional<Usuario> usuarioOptional = this.usuarioRepository.findByEmailIgnoreCase(email);
 
         if (usuarioOptional.isPresent()) {
             throw new RegradeNegocioException("Já existe um usuário cadastrado com o e-mail: " + email);
         }
     }
 
-    public List<Usuario> listarTodos() {
-        return (this.usuarioRepository.listarTodos());
+    @Transactional(readOnly = true)
+    public List<UsuarioDetalhe> listarTodos() {
+        return (this.usuarioRepository.findAll()
+                .stream()
+                .map(UsuarioDetalhe::of)
+                .toList());
     }
 }
